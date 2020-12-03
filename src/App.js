@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import Input from "./components/Input";
+import Button from "./components/Button";
+import Tasks from "./components/Tasks";
+
+import { useState } from "react";
 
 function App() {
+  const [inputValue, setInputValue] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  function handleCallback(value) {
+    setInputValue(value);
+  }
+
+  function addTask() {
+    // const ... -> Spread operator
+    if (inputValue != "") {
+      const newTasks = [...tasks, inputValue];
+      setTasks(newTasks);
+      setInputValue("");
+    }
+  }
+
+  function handleEnter(keyCode) {
+    if (keyCode == 13) {
+      addTask();
+    }
+  }
+
+  function onDelete(position) {
+    const newTasks = tasks.filter((task, key) => {
+      return key != position;
+    });
+
+    setTasks(newTasks);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <Input
+          onChange={handleCallback}
+          value={inputValue}
+          onKeyDown={handleEnter}
+        />
+        <Button onClick={addTask} />
+        <Tasks tasks={tasks} handleDelete={onDelete} />
+      </div>
     </div>
   );
 }
